@@ -22,7 +22,7 @@ type Kamojis struct {
 
 func loadKamojis(path string) Kamojis {
 	kamojis := Kamojis{}
-
+	log.Println("load kamojis from " + path + ".")
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +33,7 @@ func loadKamojis(path string) Kamojis {
 	for scanner.Scan() {
 		kamojis.Kamojis = append(kamojis.Kamojis, Kamoji{Kamoji: scanner.Text()})
 	}
-
+	log.Println("kamojis loaded.")
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
@@ -46,6 +46,9 @@ func main() {
 	templatePath := flag.String("template", "kamoji_template.html", "path to HTML template file")
 	flag.Parse()
 
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
+
+	log.Println("parsing template file from " + *templatePath + ".")
 	tmpl, err := template.ParseFiles(*templatePath)
 	if err != nil {
 		log.Fatal(err)
@@ -57,11 +60,12 @@ func main() {
 		if time.Now().Unix()-timestamp > 60 {
 			randomNumber = rand.Intn(len(allk.Kamojis))
 			timestamp = time.Now().Unix()
-			log.Println("rotating kamoji")
+			log.Println("rotating kamoji.")
 		}
-		log.Println("served kamoji to " + r.RemoteAddr)
+		log.Println("served kamoji to " + r.RemoteAddr + ".")
 		k := allk.Kamojis[randomNumber]
 		tmpl.Execute(w, k)
 	})
 	http.ListenAndServe(":"+*port, nil)
+	log.Println("starting webserver on port " + *port + ". press ctrl-c to exit.")
 }
