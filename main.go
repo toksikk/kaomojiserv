@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"html/template"
-	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Kamoji struct {
@@ -56,7 +57,9 @@ func main() {
 		if time.Now().Unix()-timestamp > 60 {
 			randomNumber = rand.Intn(len(allk.Kamojis))
 			timestamp = time.Now().Unix()
+			log.Println("rotating kamoji")
 		}
+		log.Println("served kamoji to " + r.RemoteAddr)
 		k := allk.Kamojis[randomNumber]
 		tmpl.Execute(w, k)
 	})
