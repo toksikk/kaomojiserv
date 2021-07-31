@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"html/template"
 	"log"
 	"math/rand"
@@ -18,10 +19,10 @@ type Kamojis struct {
 	Kamojis []Kamoji
 }
 
-func loadKamojis() Kamojis {
+func loadKamojis(path string) Kamojis {
 	kamojis := Kamojis{}
 
-	file, err := os.Open("kamojis.txt")
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,11 +40,16 @@ func loadKamojis() Kamojis {
 }
 
 func main() {
-	tmpl, err := template.ParseFiles("kamoji_template.html")
+	port := flag.String("port", "80", "http listening port")
+	kamojisPath := flag.String("kamojis", "kamojis.txt", "path to file with kamojis")
+	templatePath := flag.String("template", "kamoji_template.html", "path to HTML template file")
+	flag.Parse()
+
+	tmpl, err := template.ParseFiles(*templatePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	allk := loadKamojis()
+	allk := loadKamojis(*kamojisPath)
 	timestamp := time.Now().Unix()
 	randomNumber := rand.Intn(len(allk.Kamojis))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -54,5 +60,5 @@ func main() {
 		k := allk.Kamojis[randomNumber]
 		tmpl.Execute(w, k)
 	})
-	http.ListenAndServe(":80", nil)
+	http.ListenAndServe(":"+*port, nil)
 }
