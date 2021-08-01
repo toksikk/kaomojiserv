@@ -40,6 +40,11 @@ func loadKamojis(path string) Kamojis {
 	return kamojis
 }
 
+func randNum(i int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(i)
+}
+
 func main() {
 	port := flag.String("port", "80", "http listening port")
 	kamojisPath := flag.String("kamojis", "kamojis.txt", "path to file with kamojis")
@@ -57,10 +62,11 @@ func main() {
 	allk := loadKamojis(*kamojisPath)
 
 	timestamp := time.Now().Unix()
-	randomNumber := rand.Intn(len(allk.Kamojis))
+	randomNumber := randNum(len(allk.Kamojis))
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if time.Now().Unix()-timestamp > 60 {
-			randomNumber = rand.Intn(len(allk.Kamojis))
+			randomNumber = randNum(len(allk.Kamojis))
 			timestamp = time.Now().Unix()
 			log.Println("rotating kamoji.")
 		}
