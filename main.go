@@ -53,7 +53,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	allk := loadKamojis(*kamojisPath)
+
 	timestamp := time.Now().Unix()
 	randomNumber := rand.Intn(len(allk.Kamojis))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +68,7 @@ func main() {
 		k := allk.Kamojis[randomNumber]
 		tmpl.Execute(w, k)
 	})
+
 	http.ListenAndServe(":"+*port, nil)
 	log.Println("starting webserver on port " + *port + ". press ctrl-c to exit.")
 }
