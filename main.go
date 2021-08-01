@@ -64,7 +64,7 @@ func main() {
 			timestamp = time.Now().Unix()
 			log.Println("rotating kamoji.")
 		}
-		log.Println("served kamoji to " + r.RemoteAddr + ".")
+		log.Println("serving kamoji to " + r.Header.Get("x-forwarded-for") + ".")
 		k := allk.Kamojis[randomNumber]
 		tmpl.Execute(w, k)
 	})
