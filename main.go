@@ -75,6 +75,13 @@ func main() {
 		tmpl.Execute(w, k)
 	})
 
-	http.ListenAndServe(":"+*port, nil)
-	log.Println("starting webserver on port " + *port + ". press ctrl-c to exit.")
+	http.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
+		banner(w)
+	})
+
+	err = http.ListenAndServe(":"+*port, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("webserver listening on port", *port, ". press ctrl-c to exit.")
 }
