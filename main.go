@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -47,11 +48,17 @@ func randNum(i int) int {
 
 func main() {
 	port := flag.String("port", "80", "http listening port")
+	timeoutParameter := flag.String("timeout", "60", "time in seconds after last rotation until kamoji gets rotated again")
 	kamojisPath := flag.String("kamojis", "kamojis.txt", "path to file with kamojis")
 	templatePath := flag.String("template", "kamoji_template.html", "path to HTML template file")
 	flag.Parse()
 
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
+
+	timeout, err := strconv.ParseInt(*timeoutParameter, 10, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println("parsing template file from " + *templatePath + ".")
 	tmpl, err := template.ParseFiles(*templatePath)
@@ -65,7 +72,7 @@ func main() {
 	randomNumber := randNum(len(allk.Kamojis))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if time.Now().Unix()-timestamp > 60 {
+		if time.Now().Unix()-timestamp > timeout {
 			randomNumber = randNum(len(allk.Kamojis))
 			timestamp = time.Now().Unix()
 			log.Println("rotating kamoji.")
