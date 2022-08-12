@@ -13,17 +13,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type Kamoji struct {
-	Kamoji string
+type Kaomoji struct {
+	Kaomoji string
 }
 
-type Kamojis struct {
-	Kamojis []Kamoji
+type Kaomojis struct {
+	Kaomojis []Kaomoji
 }
 
-func loadKamojis(path string) Kamojis {
-	kamojis := Kamojis{}
-	log.Println("load kamojis from " + path + ".")
+func loadKaomojis(path string) Kaomojis {
+	kaomojis := Kaomojis{}
+	log.Println("load kaomojis from " + path + ".")
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -32,13 +32,13 @@ func loadKamojis(path string) Kamojis {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		kamojis.Kamojis = append(kamojis.Kamojis, Kamoji{Kamoji: scanner.Text()})
+		kaomojis.Kaomojis = append(kaomojis.Kaomojis, Kaomoji{Kaomoji: scanner.Text()})
 	}
-	log.Println("kamojis loaded.")
+	log.Println("kaomojis loaded.")
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	return kamojis
+	return kaomojis
 }
 
 func randNum(i int) int {
@@ -48,9 +48,9 @@ func randNum(i int) int {
 
 func main() {
 	port := flag.String("port", "80", "http listening port")
-	timeoutParameter := flag.String("timeout", "60", "time in seconds after last rotation until kamoji gets rotated again")
-	kamojisPath := flag.String("kamojis", "kamojis.txt", "path to file with kamojis")
-	templatePath := flag.String("template", "kamoji_template.html", "path to HTML template file")
+	timeoutParameter := flag.String("timeout", "60", "time in seconds after last rotation until kaomoji gets rotated again")
+	kaomojisPath := flag.String("kaomojis", "kaomojis.txt", "path to file with kaomojis")
+	templatePath := flag.String("template", "kaomoji_template.html", "path to HTML template file")
 	flag.Parse()
 
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
@@ -66,19 +66,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	allk := loadKamojis(*kamojisPath)
+	allk := loadKaomojis(*kaomojisPath)
 
 	timestamp := time.Now().Unix()
-	randomNumber := randNum(len(allk.Kamojis))
+	randomNumber := randNum(len(allk.Kaomojis))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if time.Now().Unix()-timestamp > timeout {
-			randomNumber = randNum(len(allk.Kamojis))
+			randomNumber = randNum(len(allk.Kaomojis))
 			timestamp = time.Now().Unix()
-			log.Println("rotating kamoji.")
+			log.Println("rotating kaomoji.")
 		}
-		log.Println("serving kamoji to " + r.Header.Get("x-forwarded-for") + ".")
-		k := allk.Kamojis[randomNumber]
+		log.Println("serving kaomoji to " + r.Header.Get("x-forwarded-for") + ".")
+		k := allk.Kaomojis[randomNumber]
 		tmpl.Execute(w, k)
 	})
 

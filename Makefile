@@ -14,7 +14,7 @@ help:  ## 🤔 Show help messages
 
 build: ## 🚧 Build for local arch
 	mkdir -p ./bin
-	go build -o ./bin/kamojiserv ${LDFLAGS} ./*.go
+	go build -o ./bin/kaomojiserv ${LDFLAGS} ./*.go
 
 clean: ## 🧹 Remove previously build binaries
 	rm -rf ./bin
@@ -24,4 +24,4 @@ pre-release:
 
 release: pre-release $(PLATFORMS) ## 📦 Build for GitHub release
 $(PLATFORMS):
-	GOOS=$(os) GOARCH=$(arch) go build -o ./bin/release/kamojiserv-$(os)-$(arch) ./*.go
+	GOOS=$(os) GOARCH=$(arch) go build -o ./bin/release/kaomojiserv-$(os)-$(arch) ./*.go
