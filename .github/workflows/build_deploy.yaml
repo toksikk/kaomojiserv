@@ -27,7 +27,6 @@ jobs:
       run: |
         go version
         go get -u golang.org/x/lint/golint
-        export PATH=$(go list -f {{.Target}} golang.org/x/lint/golint):$PATH
 
     - name: Run build
       run: make build
@@ -35,7 +34,7 @@ jobs:
     - name: Run vet & lint
       run: |
         go vet .
-        golint .
+        $HOME/go/bin/golint .
 
   deploy:
     name: Deploy
