@@ -1,5 +1,3 @@
-// nolint:unused
-
 package main
 
 import (
@@ -9,7 +7,7 @@ import (
 )
 
 var version = ""
-var builddate = ""
+var builddate = "" //nolint:unused
 
 func banner(w http.ResponseWriter) {
 	if version == "" {
