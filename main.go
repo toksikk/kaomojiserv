@@ -42,7 +42,7 @@ func loadKaomojis(path string) kaomojis {
 }
 
 func randNum(i int) int {
-	rand.Seed(time.Now().UnixNano())
+	rand.New(rand.NewSource(time.Now().UnixNano()))
 	return rand.Intn(i)
 }
 
@@ -79,7 +79,10 @@ func main() {
 		}
 		log.Println("serving kaomoji to " + r.Header.Get("x-forwarded-for") + ".")
 		k := allk.Kaomojis[randomNumber]
-		tmpl.Execute(w, k)
+		err = tmpl.Execute(w, k)
+		if err != nil {
+			log.Println("error while executing template: ", err)
+		}
 	})
 
 	http.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
