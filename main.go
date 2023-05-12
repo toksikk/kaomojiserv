@@ -13,16 +13,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type Kaomoji struct {
+type kaomoji struct {
 	Kaomoji string
 }
 
-type Kaomojis struct {
-	Kaomojis []Kaomoji
+type kaomojis struct {
+	Kaomojis []kaomoji
 }
 
-func loadKaomojis(path string) Kaomojis {
-	kaomojis := Kaomojis{}
+func loadKaomojis(path string) kaomojis {
+	kaomojis := kaomojis{}
 	log.Println("load kaomojis from " + path + ".")
 	file, err := os.Open(path)
 	if err != nil {
@@ -32,7 +32,7 @@ func loadKaomojis(path string) Kaomojis {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		kaomojis.Kaomojis = append(kaomojis.Kaomojis, Kaomoji{Kaomoji: scanner.Text()})
+		kaomojis.Kaomojis = append(kaomojis.Kaomojis, kaomoji{Kaomoji: scanner.Text()})
 	}
 	log.Println("kaomojis loaded.")
 	if err := scanner.Err(); err != nil {
