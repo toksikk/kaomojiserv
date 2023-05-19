@@ -7,7 +7,7 @@ import (
 )
 
 var version = ""
-var builddate = "" //nolint:unused
+var builddate = ""
 
 func banner(w http.ResponseWriter) {
 	if version == "" {
@@ -24,6 +24,6 @@ func banner(w http.ResponseWriter) {
 	fmt.Fprintf(w, "     ████ █████░░████████░░██████  █████░███ █████░░██████      ░███  █████ ██████ ░░██████  █████      ░░█████   \n")
 	fmt.Fprintf(w, "    ░░░░ ░░░░░  ░░░░░░░░  ░░░░░░  ░░░░░ ░░░ ░░░░░  ░░░░░░       ░███ ░░░░░ ░░░░░░   ░░░░░░  ░░░░░        ░░░░░    \n")
 	fmt.Fprintf(w, "                                                            ███ ░███                                              \n")
-	fmt.Fprintf(w, "                                                           ░░██████                                               %s\n", version)
+	fmt.Fprintf(w, "                                                           ░░██████                                               %s (%s)\n", version, builddate)
 	fmt.Fprintf(w, "                                                            ░░░░░░                                                \n")
 }
