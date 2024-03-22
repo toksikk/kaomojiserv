@@ -4,13 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"html/template"
+	"log/slog"
 	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 type kaomoji struct {
@@ -23,10 +22,11 @@ type kaomojis struct {
 
 func loadKaomojis(path string) kaomojis {
 	kaomojis := kaomojis{}
-	log.Println("load kaomojis from " + path + ".")
+	slog.Info("load kaomojis from path", "path", path)
 	file, err := os.Open(path)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error while opening file", "error", err)
+		panic(err)
 	}
 	defer file.Close()
 
@@ -34,9 +34,11 @@ func loadKaomojis(path string) kaomojis {
 	for scanner.Scan() {
 		kaomojis.Kaomojis = append(kaomojis.Kaomojis, kaomoji{Kaomoji: scanner.Text()})
 	}
-	log.Println("kaomojis loaded.")
+	slog.Info("kaomojis loaded", "kaomojis", kaomojis.Kaomojis)
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		// log error and then panic
+		slog.Error("error while scanning kaomoji file", "error", err)
+		panic(err)
 	}
 	return kaomojis
 }
@@ -53,17 +55,17 @@ func main() {
 	templatePath := flag.String("template", "kaomoji_template.html", "path to HTML template file")
 	flag.Parse()
 
-	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
-
 	timeout, err := strconv.ParseInt(*timeoutParameter, 10, 0)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error while parsing timeout parameter", "error", err)
+		panic(err)
 	}
 
-	log.Println("parsing template file from " + *templatePath + ".")
+	slog.Info("parsing template file", "path", *templatePath)
 	tmpl, err := template.ParseFiles(*templatePath)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error while parsing template file", "error", err)
+		panic(err)
 	}
 
 	allk := loadKaomojis(*kaomojisPath)
@@ -75,13 +77,13 @@ func main() {
 		if time.Now().Unix()-timestamp > timeout {
 			randomNumber = randNum(len(allk.Kaomojis))
 			timestamp = time.Now().Unix()
-			log.Println("rotating kaomoji.")
+			slog.Info("rotating kaomoji")
 		}
-		log.Println("serving kaomoji to " + r.Header.Get("x-forwarded-for") + ".")
+		slog.Info("serving kaomoji", "ip", r.Header.Get("x-forwarded-for"))
 		k := allk.Kaomojis[randomNumber]
 		err = tmpl.Execute(w, k)
 		if err != nil {
-			log.Println("error while executing template: ", err)
+			slog.Info("error while executing template", "error", err)
 		}
 	})
 
@@ -91,7 +93,9 @@ func main() {
 
 	err = http.ListenAndServe(":"+*port, nil)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error while starting webserver", "error", err)
+		panic(err)
 	}
-	log.Println("webserver listening on port", *port, ". press ctrl-c to exit.")
+	slog.Info("webserver started", "port", *port)
+	slog.Info("press ctrl-c to exit.")
 }
