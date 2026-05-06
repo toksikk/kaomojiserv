@@ -23,12 +23,6 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
 
-    - name: Install dependencies
-      run: |
-        go version
-        go get -u golang.org/x/lint/golint
-        export PATH=${PATH}:$(go env GOPATH)/bin
-
     - name: Run build
       run: make build
 
