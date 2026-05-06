@@ -125,7 +125,9 @@ func main() {
 		k := allk.Kaomojis[randomNumber].Kaomoji
 		mu.Unlock()
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(apiResponse{Kaomoji: k, Total: len(allk.Kaomojis)})
+		if err := json.NewEncoder(w).Encode(apiResponse{Kaomoji: k, Total: len(allk.Kaomojis)}); err != nil {
+			slog.Error("error encoding api response", "error", err)
+		}
 	})
 
 	http.HandleFunc("/all", func(w http.ResponseWriter, r *http.Request) {
@@ -138,7 +140,9 @@ func main() {
 			resp.Kaomojis = append(resp.Kaomojis, entry.Kaomoji)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(resp)
+		if err := json.NewEncoder(w).Encode(resp); err != nil {
+			slog.Error("error encoding all response", "error", err)
+		}
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
