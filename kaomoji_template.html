@@ -1,21 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta
-      http-equiv="Cache-Control"
-      content="no-cache, no-store, must-revalidate"
-    />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta property="og:description" content="{{.Kaomoji}}" />
     <meta charset="UTF-8" />
-    <title>{{.Kaomoji}}</title>
+    <title>{{.Kaomoji}} — kaomojiserv</title>
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        background: #0d0d0d;
+        color: #e8e8e8;
+        font-family: 'Courier New', monospace;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+      .kaomoji {
+        font-size: clamp(2rem, 8vw, 6rem);
+        animation: float 4s ease-in-out infinite;
+        cursor: pointer;
+        user-select: none;
+        text-align: center;
+        padding: 1rem;
+        line-height: 1.4;
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-14px); }
+      }
+      .copy-btn {
+        background: #1a1a1a;
+        border: 2px solid #444;
+        color: #e8e8e8;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        font-weight: bold;
+        letter-spacing: 0.15em;
+        padding: 0.6rem 2rem;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.15s ease;
+      }
+      .copy-btn:hover { background: #2a2a2a; border-color: #888; transform: scale(1.05); }
+      .copy-btn:active { transform: scale(0.97); }
+      .copy-btn.copied { background: #0d2b0d; border-color: #3a8a3a; color: #7fff7f; }
+      .copy-btn.failed { background: #2b0d0d; border-color: #8a3a3a; color: #ff9999; }
+      .countdown { font-size: 0.75rem; color: #555; letter-spacing: 0.05em; min-height: 1em; }
+      .countdown.urgent { color: #cc6600; animation: pulse 1s ease-in-out infinite; }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .nav {
+        font-size: 0.65rem;
+        color: #444;
+        letter-spacing: 0.05em;
+      }
+      .nav a { color: #556; text-decoration: none; transition: color 0.1s; }
+      .nav a:hover { color: #aaa; }
+      .footer {
+        position: fixed;
+        bottom: 1rem;
+        font-size: 0.65rem;
+        color: #2a2a2a;
+        letter-spacing: 0.08em;
+        text-align: center;
+        user-select: none;
+      }
+    </style>
   </head>
-
   <body>
-    <p style="text-align: center; padding: 50px 0; font-size: 5vw">
-      {{.Kaomoji}}
-    </p>
+    <div
+      class="kaomoji"
+      id="kaomoji"
+      data-kaomoji="{{.Kaomoji}}"
+      onclick="copyKaomoji()"
+      title="click to yoink"
+    >{{.Kaomoji}}</div>
+
+    <button class="copy-btn" id="copyBtn" onclick="copyKaomoji()">YOINK</button>
+
+    <div class="countdown" id="countdown"></div>
+
+    <div class="nav">
+      <a href="/raw">/raw</a> &middot;
+      <a href="/api">/api</a> &middot;
+      <a href="/all">/all</a> &middot;
+      <a href="/health">/health</a> &middot;
+      <a href="/version">/version</a>
+    </div>
+
+    <div class="footer">✦ certified fresh by the Ministry of Expressiveness ✦</div>
+
+    <script>
+      function copyKaomoji() {
+        const k = document.getElementById('kaomoji').dataset.kaomoji;
+        const btn = document.getElementById('copyBtn');
+        navigator.clipboard.writeText(k).then(() => {
+          btn.textContent = 'YOINKED ✓';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'YOINK'; btn.classList.remove('copied'); }, 2000);
+        }).catch(() => {
+          btn.textContent = '(╥﹏╥) needs HTTPS';
+          btn.classList.add('failed');
+          setTimeout(() => { btn.textContent = 'YOINK'; btn.classList.remove('failed'); }, 2500);
+        });
+      }
+
+      let seconds = {{.RemainingSeconds}};
+      const el = document.getElementById('countdown');
+      (function tick() {
+        if (seconds <= 0) {
+          el.textContent = 'new kaomoji incoming (ﾟヮﾟ)';
+          el.classList.add('urgent');
+          setTimeout(() => location.reload(), 500);
+          return;
+        }
+        el.textContent = seconds === 1 ? 'rotating in 1s' : 'rotating in ' + seconds + 's';
+        if (seconds <= 5) el.classList.add('urgent');
+        seconds--;
+        setTimeout(tick, 1000);
+      })();
+    </script>
   </body>
 </html>
