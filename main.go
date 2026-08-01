@@ -43,7 +43,11 @@ func loadKaomojis(path string) kaomojis {
 		slog.Error("error while opening file", "error", err)
 		panic(err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			slog.Error("error while closing kaomoji file", "error", err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -117,7 +121,9 @@ func main() {
 		k := allk.Kaomojis[randomNumber].Kaomoji
 		mu.Unlock()
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		fmt.Fprintln(w, k)
+		if _, err := fmt.Fprintln(w, k); err != nil {
+			slog.Error("error writing raw response", "error", err)
+		}
 	})
 
 	http.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
@@ -147,7 +153,9 @@ func main() {
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		fmt.Fprintf(w, "(*^_^*) all %d kaomojis accounted for\n", len(allk.Kaomojis))
+		if _, err := fmt.Fprintf(w, "(*^_^*) all %d kaomojis accounted for\n", len(allk.Kaomojis)); err != nil {
+			slog.Error("error writing health response", "error", err)
+		}
 	})
 
 	http.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
