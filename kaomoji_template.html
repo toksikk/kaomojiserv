@@ -70,6 +70,29 @@
         text-align: center;
         user-select: none;
       }
+      body.rave { animation: rave-bg 0.8s linear infinite; }
+      body.rave .kaomoji { animation: rave-bounce 0.35s ease-in-out infinite alternate, rave-color 0.8s linear infinite; }
+      body.rave .footer { color: #fff; text-shadow: 0 0 8px currentColor; }
+      .confetti {
+        position: fixed;
+        top: -2rem;
+        pointer-events: none;
+        z-index: 10;
+        animation: confetti-fall 2.5s linear forwards;
+      }
+      @keyframes rave-bg {
+        0% { background: #180018; }
+        33% { background: #001828; }
+        66% { background: #182000; }
+        100% { background: #180018; }
+      }
+      @keyframes rave-bounce { to { transform: translateY(-30px) rotate(4deg) scale(1.12); } }
+      @keyframes rave-color {
+        0% { color: #ff4fd8; text-shadow: 0 0 20px #ff4fd8; }
+        50% { color: #4ffff3; text-shadow: 0 0 20px #4ffff3; }
+        100% { color: #ffef4f; text-shadow: 0 0 20px #ffef4f; }
+      }
+      @keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
     </style>
   </head>
   <body>
@@ -93,7 +116,7 @@
       <a href="/version">/version</a>
     </div>
 
-    <div class="footer">✦ certified fresh by the Ministry of Expressiveness ✦</div>
+    <div class="footer" id="footer">✦ certified fresh by the Ministry of Expressiveness ✦</div>
 
     <script>
       function copyKaomoji() {
@@ -109,6 +132,52 @@
           setTimeout(() => { btn.textContent = 'YOINK'; btn.classList.remove('failed'); }, 2500);
         });
       }
+
+      const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+      let konamiIndex = 0;
+      let footerClicks = 0;
+
+      function startRave() {
+        if (document.body.classList.contains('rave')) return;
+        const footer = document.getElementById('footer');
+        const originalFooter = footer.textContent;
+        document.body.classList.add('rave');
+        footer.textContent = '✦ EXPRESSIVENESS OVERLOAD ✦';
+
+        const confettiTimer = setInterval(() => {
+          const piece = document.createElement('span');
+          piece.className = 'confetti';
+          piece.textContent = ['☆', '♡', 'ツ'][Math.floor(Math.random() * 3)];
+          piece.style.left = Math.random() * 100 + 'vw';
+          piece.style.color = `hsl(${Math.random() * 360} 100% 70%)`;
+          piece.style.fontSize = 0.8 + Math.random() * 1.4 + 'rem';
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 2500);
+        }, 100);
+
+        setTimeout(() => {
+          clearInterval(confettiTimer);
+          document.body.classList.remove('rave');
+          footer.textContent = originalFooter;
+        }, 10000);
+      }
+
+      document.addEventListener('keydown', event => {
+        const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+        konamiIndex = key === konami[konamiIndex] ? konamiIndex + 1 : (key === konami[0] ? 1 : 0);
+        if (konamiIndex === konami.length) {
+          konamiIndex = 0;
+          startRave();
+        }
+      });
+
+      document.getElementById('footer').addEventListener('click', () => {
+        footerClicks++;
+        if (footerClicks === 7) {
+          footerClicks = 0;
+          startRave();
+        }
+      });
 
       let seconds = {{.RemainingSeconds}};
       const el = document.getElementById('countdown');
