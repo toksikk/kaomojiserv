@@ -10,9 +10,50 @@
     <title>{{.Kaomoji}} — kaomojiserv</title>
     <style>
       *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        color-scheme: light dark;
+        --background: #f5f1e8;
+        --foreground: #24211c;
+        --button-background: #fffaf0;
+        --button-border: #9d9688;
+        --button-hover: #ebe4d7;
+        --button-hover-border: #5f5a51;
+        --muted: #756f65;
+        --nav: #696478;
+        --nav-hover: #292632;
+        --footer: #a39b8e;
+        --urgent: #a34f00;
+        --success-background: #e0f3df;
+        --success-border: #438548;
+        --success-foreground: #195c21;
+        --failure-background: #f8dfdf;
+        --failure-border: #a54b4b;
+        --failure-foreground: #7d2020;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #0d0d0d;
+          --foreground: #e8e8e8;
+          --button-background: #1a1a1a;
+          --button-border: #444;
+          --button-hover: #2a2a2a;
+          --button-hover-border: #888;
+          --muted: #777;
+          --nav: #667;
+          --nav-hover: #aaa;
+          --footer: #555;
+          --urgent: #cc6600;
+          --success-background: #0d2b0d;
+          --success-border: #3a8a3a;
+          --success-foreground: #7fff7f;
+          --failure-background: #2b0d0d;
+          --failure-border: #8a3a3a;
+          --failure-foreground: #ff9999;
+        }
+      }
       body {
-        background: #0d0d0d;
-        color: #e8e8e8;
+        background: var(--background);
+        color: var(--foreground);
         font-family: 'Courier New', monospace;
         min-height: 100vh;
         display: flex;
@@ -35,9 +76,9 @@
         50% { transform: translateY(-14px); }
       }
       .copy-btn {
-        background: #1a1a1a;
-        border: 2px solid #444;
-        color: #e8e8e8;
+        background: var(--button-background);
+        border: 2px solid var(--button-border);
+        color: var(--foreground);
         font-family: 'Courier New', monospace;
         font-size: 0.9rem;
         font-weight: bold;
@@ -47,25 +88,25 @@
         border-radius: 3px;
         transition: all 0.15s ease;
       }
-      .copy-btn:hover { background: #2a2a2a; border-color: #888; transform: scale(1.05); }
+      .copy-btn:hover { background: var(--button-hover); border-color: var(--button-hover-border); transform: scale(1.05); }
       .copy-btn:active { transform: scale(0.97); }
-      .copy-btn.copied { background: #0d2b0d; border-color: #3a8a3a; color: #7fff7f; }
-      .copy-btn.failed { background: #2b0d0d; border-color: #8a3a3a; color: #ff9999; }
-      .countdown { font-size: 0.75rem; color: #555; letter-spacing: 0.05em; min-height: 1em; }
-      .countdown.urgent { color: #cc6600; animation: pulse 1s ease-in-out infinite; }
+      .copy-btn.copied { background: var(--success-background); border-color: var(--success-border); color: var(--success-foreground); }
+      .copy-btn.failed { background: var(--failure-background); border-color: var(--failure-border); color: var(--failure-foreground); }
+      .countdown { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; min-height: 1em; }
+      .countdown.urgent { color: var(--urgent); animation: pulse 1s ease-in-out infinite; }
       @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
       .nav {
         font-size: 0.65rem;
-        color: #444;
+        color: var(--muted);
         letter-spacing: 0.05em;
       }
-      .nav a { color: #556; text-decoration: none; transition: color 0.1s; }
-      .nav a:hover { color: #aaa; }
+      .nav a { color: var(--nav); text-decoration: none; transition: color 0.1s; }
+      .nav a:hover { color: var(--nav-hover); }
       .footer {
         position: fixed;
         bottom: 1rem;
         font-size: 0.65rem;
-        color: #2a2a2a;
+        color: var(--footer);
         letter-spacing: 0.08em;
         text-align: center;
         user-select: none;
