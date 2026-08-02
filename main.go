@@ -13,6 +13,9 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type kaomoji struct {
@@ -91,7 +94,12 @@ func main() {
 	timestamp := time.Now().Unix()
 	randomNumber := randNum(len(allk.Kaomojis))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	registry := prometheus.NewRegistry()
+	registry.MustRegister(prometheus.NewGoCollector(), prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
+	metrics := newHTTPMetrics(registry)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		mu.Lock()
 		if time.Now().Unix()-timestamp > timeout {
 			randomNumber = randNum(len(allk.Kaomojis))
@@ -105,18 +113,16 @@ func main() {
 		if remaining < 0 {
 			remaining = 0
 		}
-		slog.Info("serving kaomoji", "ip", r.Header.Get("x-forwarded-for"))
 		data := templateData{
 			Kaomoji:          current,
 			RemainingSeconds: remaining,
 		}
-		err = tmpl.Execute(w, data)
-		if err != nil {
+		if err := tmpl.Execute(w, data); err != nil {
 			slog.Error("error while executing template", "error", err)
 		}
 	})
 
-	http.HandleFunc("/raw", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/raw", func(w http.ResponseWriter, r *http.Request) {
 		mu.Lock()
 		k := allk.Kaomojis[randomNumber].Kaomoji
 		mu.Unlock()
@@ -126,7 +132,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
 		mu.Lock()
 		k := allk.Kaomojis[randomNumber].Kaomoji
 		mu.Unlock()
@@ -136,7 +142,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/all", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/all", func(w http.ResponseWriter, r *http.Request) {
 		type allResp struct {
 			Kaomojis []string `json:"kaomojis"`
 			Total    int      `json:"total"`
@@ -151,19 +157,20 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		if _, err := fmt.Fprintf(w, "(*^_^*) all %d kaomojis accounted for\n", len(allk.Kaomojis)); err != nil {
 			slog.Error("error writing health response", "error", err)
 		}
 	})
 
-	http.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
 		banner(w)
 	})
+	mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 
 	slog.Info("webserver starting", "port", *port)
-	err = http.ListenAndServe(":"+*port, nil)
+	err = http.ListenAndServe(":"+*port, observeHTTP(slog.Default(), metrics, mux))
 	if err != nil {
 		slog.Error("error while starting webserver", "error", err)
 		panic(err)
