@@ -1,0 +1,22 @@
+# Repository Notes
+
+## Runtime
+
+- This is one Go 1.21 `main` package; `main.go` wires every route and `observability.go` wraps the single `http.ServeMux` with access logging and Prometheus metrics.
+- The HTML template and kaomoji list are runtime files, not embedded. Run from the repository root or pass `-template` and `-kaomojis`; startup panics if either path is unavailable. An empty kaomoji file also panics when selecting the initial item.
+- Local development needs an unprivileged port: `go run . -port 8080`. The defaults are port `80`, timeout `60`, `kaomojis.txt`, and `kaomoji_template.html`.
+- Rotation is lazy and shared across clients: only a request handled by `/` checks the timeout and chooses a new kaomoji. `/raw` and `/api` return the current selection without rotating it.
+- The root `"/"` ServeMux pattern is also the fallback for unknown paths. Preserve route labels from `ServeMux.Handler`; observability tests expect labels such as `/api` rather than raw URL paths.
+- `make build` injects `main.version` and `main.builddate` with linker flags and writes `bin/kaomojiserv`. Plain `go build`/`go run` leaves build metadata empty or derived from Go build info.
+
+## Verification
+
+- Full tests: `go test ./...`
+- Focus one test: `go test -run '^TestObserveHTTPLogsAccessAndRecordsMetrics$' .`
+- Match the pre-commit Go checks with `gofmt -w <changed.go files>`, `golangci-lint run`, and `go test ./...`. If `go.mod` or `go.sum` changed, also run `go mod verify`.
+- CI on `master` runs `make build` and `golangci-lint`, then dispatches deployment to `toksikk/deploy-kaomojiserv`; deployment configuration is not in this repository.
+
+## Content And Commits
+
+- Add one kaomoji per line in `kaomojis.txt`; blank lines are not filtered and become selectable entries.
+- The commit-msg hook, rather than the prose example in `CONTRIBUTING.md`, is authoritative: `type(optional-scope): description`, where type is one of `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test` and scopes are lowercase `[a-z0-9._/-]+`.
