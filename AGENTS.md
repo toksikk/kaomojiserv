@@ -19,4 +19,4 @@
 ## Content And Commits
 
 - Add one kaomoji per line in `kaomojis.txt`; blank lines are not filtered and become selectable entries.
-- The commit-msg hook, rather than the prose example in `CONTRIBUTING.md`, is authoritative: `type(optional-scope): description`, where type is one of `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test` and scopes are lowercase `[a-z0-9._/-]+`.
+- Commit subjects use `scope(optional issue): change description`, for example `docs: clarify setup` or `web(#42): improve response handling`. Keep the description lowercase and imperative.
