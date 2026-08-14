@@ -114,13 +114,6 @@
       body.rave { animation: rave-bg 0.8s linear infinite; }
       body.rave .kaomoji { animation: rave-bounce 0.35s ease-in-out infinite alternate, rave-color 0.8s linear infinite; }
       body.rave .footer { color: #fff; text-shadow: 0 0 8px currentColor; }
-      .confetti {
-        position: fixed;
-        top: -2rem;
-        pointer-events: none;
-        z-index: 10;
-        animation: confetti-fall 2.5s linear forwards;
-      }
       @keyframes rave-bg {
         0% { background: #180018; }
         33% { background: #001828; }
@@ -133,21 +126,246 @@
         50% { color: #4ffff3; text-shadow: 0 0 20px #4ffff3; }
         100% { color: #ffef4f; text-shadow: 0 0 20px #ffef4f; }
       }
-      @keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+      .season-layer {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .kaomoji, .copy-btn, .countdown, .holiday-countdown, .season-action, .nav { position: relative; z-index: 2; }
+      .season-friend {
+        display: none;
+        min-height: 1.5rem;
+        color: var(--muted);
+        font-size: 1rem;
+        text-align: center;
+        z-index: 2;
+      }
+      .season-friend.visible { display: block; animation: reveal 0.5s ease-out; }
+      .season-action {
+        display: none;
+        background: transparent;
+        border: 1px dashed var(--button-border);
+        color: var(--foreground);
+        font: inherit;
+        padding: 0.45rem 0.8rem;
+        cursor: pointer;
+      }
+      .holiday-countdown {
+        display: none;
+        color: var(--muted);
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .particle {
+        position: fixed;
+        top: -2rem;
+        pointer-events: none;
+        z-index: 10;
+        animation: particle-fall var(--duration, 3s) linear forwards;
+      }
+      .particle.burst {
+        top: var(--top, 50%);
+        left: var(--left, 50%);
+        animation: particle-burst var(--duration, 1.4s) ease-out forwards;
+      }
+      @keyframes particle-fall { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
+      @keyframes particle-burst { to { transform: translate(var(--x), var(--y)) rotate(540deg) scale(0.3); opacity: 0; } }
+      @keyframes reveal { from { opacity: 0; transform: scale(0.7); } }
+
+      body.season-easter {
+        --background: #fff3f6;
+        --foreground: #422b42;
+        --button-background: #fffbed;
+        --button-border: #bc82ae;
+        --muted: #836078;
+      }
+      body.season-easter .kaomoji { animation-name: easter-hop; }
+      .easter-egg {
+        display: none;
+        position: fixed;
+        z-index: 3;
+        pointer-events: auto;
+        border: 0;
+        background: transparent;
+        font-size: 1.35rem;
+        cursor: pointer;
+        filter: saturate(0.75);
+      }
+      body.season-easter .easter-egg { display: block; }
+      .easter-egg:nth-of-type(1) { left: 7vw; top: 16vh; }
+      .easter-egg:nth-of-type(2) { right: 8vw; top: 39vh; }
+      .easter-egg:nth-of-type(3) { left: 21vw; bottom: 12vh; }
+      .easter-egg.found { opacity: 0.25; transform: scale(0.75); }
+      @keyframes easter-hop { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-18px) rotate(-2deg); } 55% { transform: translateY(-18px) rotate(2deg); } }
+
+      .april-loader {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 1.2rem;
+        width: min(22rem, 80vw);
+        transform: translateX(-50%);
+        color: var(--muted);
+        font-size: 0.7rem;
+        text-align: center;
+        z-index: 5;
+      }
+      .april-loader::after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 3px;
+        margin-top: 0.35rem;
+        background: var(--foreground);
+        animation: fake-load 1.6s ease-in-out forwards;
+      }
+      body.april-intro .april-loader { display: block; }
+      body.april-flip > :not(.april-loader):not(.season-layer) { transform: rotate(180deg); }
+      body.april-font { font-family: 'Comic Sans MS', cursive; }
+      @keyframes fake-load { 0% { width: 3%; } 80% { width: 93%; } 100% { width: 37%; } }
+
+      body.season-halloween {
+        --background: #100b16;
+        --foreground: #f2d7a1;
+        --button-background: #21142b;
+        --button-border: #b45b20;
+        --button-hover: #35203d;
+        --muted: #b59aaf;
+        --nav: #d57534;
+      }
+      body.season-halloween .kaomoji { text-shadow: 0 0 18px #e56a22; }
+      body.season-halloween .season-layer::before {
+        content: '';
+        position: absolute;
+        inset: 55% -15% -20%;
+        background: radial-gradient(ellipse, #74677d55, transparent 65%);
+        animation: fog-drift 10s ease-in-out infinite alternate;
+      }
+      body.haunted { animation: haunted-flicker 0.55s steps(2); }
+      .ghost { text-shadow: 0 0 12px currentColor; }
+      @keyframes fog-drift { to { transform: translateX(10%); } }
+      @keyframes haunted-flicker { 20%, 60% { filter: invert(1); } 40%, 80% { filter: none; } }
+
+      body.season-christmas {
+        --background: #f7f2e7;
+        --foreground: #253b2b;
+        --button-background: #fffaf0;
+        --button-border: #a22f35;
+        --muted: #686f59;
+        --nav: #9b2d32;
+      }
+      body.season-christmas .season-action { display: block; }
+      .lights {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1.5rem;
+        justify-content: space-around;
+        border-top: 2px solid #334a35;
+      }
+      body.season-christmas .lights { display: flex; }
+      .bulb {
+        width: 0.55rem;
+        height: 0.8rem;
+        border-radius: 50%;
+        background: var(--bulb);
+        box-shadow: 0 0 10px var(--bulb);
+        animation: twinkle 1.8s ease-in-out infinite alternate;
+      }
+      .santa-hat {
+        display: none;
+        position: absolute;
+        top: -0.15rem;
+        left: 50%;
+        color: #b52f35;
+        font-size: 1.4rem;
+        transform: translate(-50%, -100%) rotate(-8deg);
+      }
+      body.season-christmas .santa-hat { display: block; }
+      @keyframes twinkle { to { opacity: 0.35; } }
+
+      body.season-new-year {
+        --background: #090d22;
+        --foreground: #f3d98b;
+        --button-background: #111936;
+        --button-border: #a98b42;
+        --button-hover: #19234a;
+        --muted: #aeb3ca;
+        --nav: #dec36e;
+      }
+      body.season-new-year .holiday-countdown { display: block; }
+
+      @media (prefers-color-scheme: dark) {
+        body.season-easter {
+          --background: #21141f;
+          --foreground: #f3dce9;
+          --button-background: #2d1c2a;
+          --muted: #c29bae;
+        }
+        body.season-christmas {
+          --background: #101912;
+          --foreground: #efe5cb;
+          --button-background: #17231a;
+          --muted: #aab59c;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .particle { display: none; }
+      }
+      @media (max-width: 36rem) {
+        body { gap: 1.1rem; padding: 1rem; }
+        .easter-egg:nth-of-type(3) { bottom: 8vh; }
+        .footer { max-width: 90vw; }
+      }
     </style>
   </head>
   <body>
+    <div class="season-layer" id="seasonLayer">
+      <button class="easter-egg" data-egg="1" aria-label="Hidden Easter egg one">◇</button>
+      <button class="easter-egg" data-egg="2" aria-label="Hidden Easter egg two">◯</button>
+      <button class="easter-egg" data-egg="3" aria-label="Hidden Easter egg three">⬡</button>
+      <div class="lights" id="lights" aria-hidden="true"></div>
+    </div>
+
+    <div class="april-loader" id="aprilLoader">AI-enhancing emotional bandwidth...</div>
+
     <div
       class="kaomoji"
       id="kaomoji"
       data-kaomoji="{{.Kaomoji}}"
       onclick="copyKaomoji()"
       title="click to yoink"
-    >{{.Kaomoji}}</div>
+    ><span class="santa-hat" aria-hidden="true">▲</span>{{.Kaomoji}}</div>
 
     <button class="copy-btn" id="copyBtn" onclick="copyKaomoji()">YOINK</button>
 
     <div class="countdown" id="countdown"></div>
+    <button class="holiday-countdown" id="holidayCountdown" type="button"></button>
+    <button class="season-action" id="seasonAction" type="button">[ unwrap gift ]</button>
+    <div class="season-friend" id="seasonFriend" aria-hidden="true"></div>
+    <div class="sr-only" id="seasonStatus" role="status" aria-live="polite"></div>
 
     <div class="nav">
       <a href="/raw">/raw</a> &middot;
@@ -160,49 +378,360 @@
     <div class="footer" id="footer">✦ certified fresh by the Ministry of Expressiveness ✦</div>
 
     <script>
-      function copyKaomoji() {
-        const k = document.getElementById('kaomoji').dataset.kaomoji;
-        const btn = document.getElementById('copyBtn');
-        navigator.clipboard.writeText(k).then(() => {
-          btn.textContent = 'YOINKED ✓';
-          btn.classList.add('copied');
-          setTimeout(() => { btn.textContent = 'YOINK'; btn.classList.remove('copied'); }, 2000);
-        }).catch(() => {
-          btn.textContent = '(╥﹏╥) needs HTTPS';
-          btn.classList.add('failed');
-          setTimeout(() => { btn.textContent = 'YOINK'; btn.classList.remove('failed'); }, 2500);
+      const body = document.body;
+      const kaomoji = document.getElementById('kaomoji');
+      const copyBtn = document.getElementById('copyBtn');
+      const countdown = document.getElementById('countdown');
+      const footer = document.getElementById('footer');
+      const seasonLayer = document.getElementById('seasonLayer');
+      const seasonFriend = document.getElementById('seasonFriend');
+      const seasonAction = document.getElementById('seasonAction');
+      const seasonStatus = document.getElementById('seasonStatus');
+      const holidayCountdown = document.getElementById('holidayCountdown');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const allowedSeasons = ['easter', 'april-fools', 'halloween', 'christmas', 'new-year', 'none'];
+      const querySeason = new URLSearchParams(location.search).get('season');
+      const previewSeason = allowedSeasons.includes(querySeason) ? querySeason : null;
+      const seasonalState = { name: 'none', footer: footer.textContent, particleCount: 0 };
+
+      function storageGet(storage, key) {
+        try { return storage.getItem(key); } catch (_) { return null; }
+      }
+
+      function storageSet(storage, key, value) {
+        try { storage.setItem(key, value); } catch (_) { /* Storage may be disabled. */ }
+      }
+
+      function announce(message) {
+        seasonStatus.textContent = '';
+        setTimeout(() => { seasonStatus.textContent = message; }, 20);
+      }
+
+      function setFooter(message) {
+        seasonalState.footer = message;
+        if (!body.classList.contains('rave')) footer.textContent = message;
+      }
+
+      function randomItem(items) {
+        return items[Math.floor(Math.random() * items.length)];
+      }
+
+      function makeParticle(symbols, colors, burst) {
+        if (reducedMotion || seasonalState.particleCount >= 80) return null;
+        const particle = document.createElement('span');
+        particle.className = burst ? 'particle burst' : 'particle';
+        particle.textContent = randomItem(symbols);
+        particle.setAttribute('aria-hidden', 'true');
+        particle.style.color = randomItem(colors);
+        particle.style.fontSize = 0.7 + Math.random() * 1.2 + 'rem';
+        particle.style.setProperty('--duration', 1.5 + Math.random() * 2.5 + 's');
+        if (burst) {
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 60 + Math.random() * 180;
+          particle.style.setProperty('--left', 20 + Math.random() * 60 + '%');
+          particle.style.setProperty('--top', 20 + Math.random() * 55 + '%');
+          particle.style.setProperty('--x', Math.cos(angle) * distance + 'px');
+          particle.style.setProperty('--y', Math.sin(angle) * distance + 'px');
+        } else {
+          particle.style.left = Math.random() * 100 + 'vw';
+        }
+        seasonalState.particleCount++;
+        document.body.appendChild(particle);
+        setTimeout(() => {
+          particle.remove();
+          seasonalState.particleCount--;
+        }, 4200);
+        return particle;
+      }
+
+      function burstParticles(symbols, colors, count) {
+        for (let i = 0; i < count; i++) makeParticle(symbols, colors, true);
+      }
+
+      function startRain(symbols, colors, interval) {
+        if (reducedMotion) return;
+        makeParticle(symbols, colors, false);
+        setInterval(() => makeParticle(symbols, colors, false), interval);
+      }
+
+      function addBackdrop(symbols, count) {
+        for (let i = 0; i < count; i++) {
+          const item = document.createElement('span');
+          item.textContent = randomItem(symbols);
+          item.setAttribute('aria-hidden', 'true');
+          item.style.position = 'absolute';
+          item.style.left = Math.random() * 96 + '%';
+          item.style.top = Math.random() * 90 + '%';
+          item.style.opacity = 0.12 + Math.random() * 0.18;
+          item.style.fontSize = 0.8 + Math.random() * 1.2 + 'rem';
+          seasonLayer.appendChild(item);
+        }
+      }
+
+      function easterSunday(year) {
+        const a = year % 19;
+        const b = Math.floor(year / 100);
+        const c = year % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + 8) / 25);
+        const g = Math.floor((b - f + 1) / 3);
+        const h = (19 * a + b - d - g + 15) % 30;
+        const i = Math.floor(c / 4);
+        const k = c % 4;
+        const l = (32 + 2 * e + 2 * i - h - k) % 7;
+        const m = Math.floor((a + 11 * h + 22 * l) / 451);
+        const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
+        const day = ((h + l - 7 * m + 114) % 31) + 1;
+        return new Date(year, month, day);
+      }
+
+      function seasonForDate(now) {
+        if (previewSeason !== null) return previewSeason;
+        const month = now.getMonth();
+        const day = now.getDate();
+        if (month === 3 && day === 1) return 'april-fools';
+        if (month === 9) return 'halloween';
+        if (month === 11 && day <= 26) return 'christmas';
+        if ((month === 11 && day >= 28) || (month === 0 && day <= 2)) return 'new-year';
+
+        const today = new Date(now.getFullYear(), month, day);
+        const easter = easterSunday(now.getFullYear());
+        const daysAfterEaster = Math.round((today - easter) / 86400000);
+        return daysAfterEaster >= 0 && daysAfterEaster <= 6 ? 'easter' : 'none';
+      }
+
+      function revealFriend(text, message) {
+        seasonFriend.textContent = text;
+        seasonFriend.classList.add('visible');
+        announce(message);
+      }
+
+      function completeEaster(celebrate = true) {
+        document.querySelectorAll('.easter-egg').forEach(egg => egg.classList.add('found'));
+        storageSet(sessionStorage, 'season-easter-complete', 'yes');
+        revealFriend('(\\/) (•ㅅ•) (\\/)', 'Eggspressiveness detected. You found the Easter bunny.');
+        if (celebrate) burstParticles(['◇', '○', '✦'], ['#e989b8', '#8e9ee8', '#8bc7a1', '#e8c66d'], 28);
+        copyBtn.textContent = 'HOP';
+      }
+
+      function initEaster() {
+        setFooter('✦ something has been hidden in the margins ✦');
+        addBackdrop(['◇', '○'], 12);
+        const found = new Set((storageGet(sessionStorage, 'season-easter-eggs') || '').split(',').filter(Boolean));
+        document.querySelectorAll('.easter-egg').forEach(egg => {
+          if (found.has(egg.dataset.egg)) egg.classList.add('found');
+          egg.addEventListener('click', () => {
+            if (found.has(egg.dataset.egg)) return;
+            found.add(egg.dataset.egg);
+            egg.classList.add('found');
+            storageSet(sessionStorage, 'season-easter-eggs', Array.from(found).join(','));
+            announce('Hidden egg found. ' + found.size + ' of 3.');
+            burstParticles(['◇', '✦'], ['#e989b8', '#8e9ee8', '#8bc7a1'], 8);
+            if (found.size === 3) completeEaster();
+          });
+        });
+        if (storageGet(sessionStorage, 'season-easter-complete') === 'yes' || found.size === 3) completeEaster(false);
+      }
+
+      function initAprilFools() {
+        const jokes = [
+          '✦ blockchain-certified expressiveness ✦',
+          '✦ now with 12% more parentheses ✦',
+          '✦ enterprise expressiveness enabled ✦'
+        ];
+        setFooter(jokes[new Date().getDate() % jokes.length]);
+        if (storageGet(sessionStorage, 'season-april-intro') !== 'seen') {
+          storageSet(sessionStorage, 'season-april-intro', 'seen');
+          body.classList.add('april-intro');
+          if (!reducedMotion) body.classList.add('april-flip');
+          setTimeout(() => {
+            body.classList.remove('april-flip');
+            body.classList.add('april-font');
+          }, 650);
+          setTimeout(() => body.classList.remove('april-intro', 'april-font'), 1800);
+        }
+
+        if (storageGet(sessionStorage, 'season-april-dodge') === 'done') return;
+        let attempts = 0;
+        copyBtn.addEventListener('pointerenter', event => {
+          if (event.pointerType === 'touch') return;
+          attempts++;
+          if (attempts === 1 && !reducedMotion) {
+            const distance = Math.min(90, window.innerWidth / 6);
+            copyBtn.style.transform = 'translate(' + (Math.random() > 0.5 ? distance : -distance) + 'px, -20px)';
+            copyBtn.textContent = 'NICE TRY';
+            return;
+          }
+          copyBtn.style.transform = '';
+          copyBtn.textContent = 'YOINK (I SURRENDER)';
+          storageSet(sessionStorage, 'season-april-dodge', 'done');
+          announce('The button has surrendered.');
         });
       }
 
-      const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-      let konamiIndex = 0;
-      let footerClicks = 0;
+      let hauntingActive = false;
+      function summonHaunting() {
+        if (hauntingActive) return;
+        hauntingActive = true;
+        body.classList.add('haunted');
+        const ghost = document.createElement('span');
+        ghost.className = 'particle burst ghost';
+        ghost.textContent = '～(つˆДˆ)つ｡☆';
+        ghost.setAttribute('aria-hidden', 'true');
+        ghost.style.setProperty('--left', '50%');
+        ghost.style.setProperty('--top', '48%');
+        ghost.style.setProperty('--x', '0px');
+        ghost.style.setProperty('--y', '-180px');
+        ghost.style.setProperty('--duration', '2.5s');
+        document.body.appendChild(ghost);
+        setTimeout(() => ghost.remove(), 2600);
+        burstParticles(['⌁', '▲', '⋆'], ['#e46b25', '#8e69ad', '#d5cadc'], 24);
+        announce('BOO! A ghostly kaomoji has appeared.');
+        countdown.textContent = 'BOO!';
+        setTimeout(() => {
+          body.classList.remove('haunted');
+          hauntingActive = false;
+        }, 2700);
+      }
+
+      function initHalloween() {
+        setFooter(new Date().getHours() === 0 ? '✦ hold still... something is near ✦' : '✦ haunted by the Ministry of Expressiveness ✦');
+        addBackdrop(['▲', '⌁', '☾'], 15);
+        let holdTimer;
+        kaomoji.addEventListener('pointerdown', () => { holdTimer = setTimeout(summonHaunting, 900); });
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(name => {
+          kaomoji.addEventListener(name, () => clearTimeout(holdTimer));
+        });
+      }
+
+      function unwrapChristmas(celebrate = true) {
+        storageSet(sessionStorage, 'season-christmas-unwrapped', 'yes');
+        seasonAction.textContent = '[ unwrapped ]';
+        revealFriend('gift: *<|:-)', 'A festive kaomoji was hiding in the present.');
+        if (celebrate) burstParticles(['*', '+', '✦'], ['#c83c43', '#3d8b55', '#e4bd55', '#f4f0dc'], 30);
+      }
+
+      function initChristmas() {
+        setFooter('✦ certified merry by the Ministry of Expressiveness ✦');
+        const lights = document.getElementById('lights');
+        ['#d8393f', '#e9bf46', '#438a5b', '#5f78bb', '#d8393f', '#e9bf46', '#438a5b', '#5f78bb'].forEach((color, index) => {
+          const bulb = document.createElement('span');
+          bulb.className = 'bulb';
+          bulb.style.setProperty('--bulb', color);
+          bulb.style.animationDelay = index * 0.18 + 's';
+          bulb.setAttribute('aria-hidden', 'true');
+          lights.appendChild(bulb);
+        });
+        startRain(['*', '+', '✦'], ['#f6f1df', '#d7e4eb'], 450);
+        seasonAction.addEventListener('click', () => unwrapChristmas());
+        if (storageGet(sessionStorage, 'season-christmas-unwrapped') === 'yes') unwrapChristmas(false);
+      }
+
+      let fireworksActive = false;
+      function launchFireworks(year) {
+        if (fireworksActive) return;
+        fireworksActive = true;
+        revealFriend('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ ' + year, 'Happy New Year ' + year + '!');
+        for (let wave = 0; wave < 4; wave++) {
+          setTimeout(() => burstParticles(['✦', '☆', '+', '♡'], ['#f2d16b', '#e76f92', '#70d8dd', '#a58bea'], 24), wave * 350);
+        }
+        setTimeout(() => { fireworksActive = false; }, 2500);
+      }
+
+      function initNewYear(now) {
+        const inJanuary = now.getMonth() === 0;
+        const celebrationYear = inJanuary ? now.getFullYear() : now.getFullYear() + 1;
+        setFooter('✦ new year, same emotional complexity ✦');
+        addBackdrop(['✦', '·', '☆'], 24);
+        startRain(['✦', '☆'], ['#f2d16b', '#d9e2ff'], 700);
+
+        let target;
+        if (previewSeason === 'new-year' && now.getMonth() !== 11 && now.getMonth() !== 0) {
+          target = new Date(now.getTime() + 10000);
+        } else if (inJanuary) {
+          target = new Date(now.getFullYear(), 0, 1);
+        } else {
+          target = new Date(now.getFullYear() + 1, 0, 1);
+        }
+
+        function updateNewYearCountdown() {
+          const remaining = target - new Date();
+          if (remaining <= 0) {
+            holidayCountdown.textContent = celebrationYear + ' has arrived - launch fireworks';
+            const storageKey = 'season-new-year-' + celebrationYear;
+            if (storageGet(localStorage, storageKey) !== 'celebrated') {
+              storageSet(localStorage, storageKey, 'celebrated');
+              launchFireworks(celebrationYear);
+            }
+            return;
+          }
+          const totalSeconds = Math.floor(remaining / 1000);
+          const days = Math.floor(totalSeconds / 86400);
+          const hours = Math.floor(totalSeconds % 86400 / 3600);
+          const minutes = Math.floor(totalSeconds % 3600 / 60);
+          const seconds = totalSeconds % 60;
+          holidayCountdown.textContent = 'midnight in ' + (days ? days + 'd ' : '') +
+            String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+          setTimeout(updateNewYearCountdown, 1000);
+        }
+        holidayCountdown.addEventListener('click', () => launchFireworks(celebrationYear));
+        updateNewYearCountdown();
+      }
+
+      function initializeSeason() {
+        const now = new Date();
+        seasonalState.name = seasonForDate(now);
+        body.dataset.season = seasonalState.name;
+        if (seasonalState.name !== 'none') body.classList.add('season-' + seasonalState.name);
+        if (seasonalState.name === 'easter') initEaster();
+        if (seasonalState.name === 'april-fools') initAprilFools();
+        if (seasonalState.name === 'halloween') initHalloween();
+        if (seasonalState.name === 'christmas') initChristmas();
+        if (seasonalState.name === 'new-year') initNewYear(now);
+      }
+
+      function normalCopyLabel() {
+        return seasonalState.name === 'easter' ? 'HOP' : 'YOINK';
+      }
+
+      function copyKaomoji() {
+        navigator.clipboard.writeText(kaomoji.dataset.kaomoji).then(() => {
+          copyBtn.textContent = 'YOINKED ✓';
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.textContent = normalCopyLabel();
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        }).catch(() => {
+          copyBtn.textContent = '(╥﹏╥) needs HTTPS';
+          copyBtn.classList.add('failed');
+          setTimeout(() => {
+            copyBtn.textContent = normalCopyLabel();
+            copyBtn.classList.remove('failed');
+          }, 2500);
+        });
+      }
 
       function startRave() {
-        if (document.body.classList.contains('rave')) return;
-        const footer = document.getElementById('footer');
-        const originalFooter = footer.textContent;
-        document.body.classList.add('rave');
+        if (body.classList.contains('rave')) return;
+        body.classList.add('rave');
         footer.textContent = '✦ EXPRESSIVENESS OVERLOAD ✦';
-
         const confettiTimer = setInterval(() => {
-          const piece = document.createElement('span');
-          piece.className = 'confetti';
-          piece.textContent = ['☆', '♡', 'ツ'][Math.floor(Math.random() * 3)];
-          piece.style.left = Math.random() * 100 + 'vw';
-          piece.style.color = `hsl(${Math.random() * 360} 100% 70%)`;
-          piece.style.fontSize = 0.8 + Math.random() * 1.4 + 'rem';
-          document.body.appendChild(piece);
-          setTimeout(() => piece.remove(), 2500);
+          makeParticle(['☆', '♡', 'ツ'], ['#ff4fd8', '#4ffff3', '#ffef4f'], false);
         }, 100);
-
         setTimeout(() => {
           clearInterval(confettiTimer);
-          document.body.classList.remove('rave');
-          footer.textContent = originalFooter;
+          body.classList.remove('rave');
+          footer.textContent = seasonalState.footer;
         }, 10000);
       }
 
+      initializeSeason();
+
+      const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+      let konamiIndex = 0;
+      let typedSecret = '';
       document.addEventListener('keydown', event => {
         const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
         konamiIndex = key === konami[konamiIndex] ? konamiIndex + 1 : (key === konami[0] ? 1 : 0);
@@ -210,9 +739,17 @@
           konamiIndex = 0;
           startRave();
         }
+        if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) return;
+        typedSecret = (typedSecret + event.key.toLowerCase()).slice(-12);
+        if (seasonalState.name === 'easter' && typedSecret.endsWith('bunny')) completeEaster();
+        if (seasonalState.name === 'halloween' && typedSecret.endsWith('boo')) summonHaunting();
+        if (seasonalState.name === 'christmas' && typedSecret.endsWith('hohoho')) unwrapChristmas();
+        const newYear = String(new Date().getMonth() === 0 ? new Date().getFullYear() : new Date().getFullYear() + 1);
+        if (seasonalState.name === 'new-year' && typedSecret.endsWith(newYear)) launchFireworks(newYear);
       });
 
-      document.getElementById('footer').addEventListener('click', () => {
+      let footerClicks = 0;
+      footer.addEventListener('click', () => {
         footerClicks++;
         if (footerClicks === 7) {
           footerClicks = 0;
@@ -221,16 +758,21 @@
       });
 
       let seconds = {{.RemainingSeconds}};
-      const el = document.getElementById('countdown');
       (function tick() {
         if (seconds <= 0) {
-          el.textContent = 'new kaomoji incoming (ﾟヮﾟ)';
-          el.classList.add('urgent');
+          countdown.textContent = 'new kaomoji incoming (ﾟヮﾟ)';
+          countdown.classList.add('urgent');
           setTimeout(() => location.reload(), 500);
           return;
         }
-        el.textContent = seconds === 1 ? 'rotating in 1s' : 'rotating in ' + seconds + 's';
-        if (seconds <= 5) el.classList.add('urgent');
+        if (seasonalState.name === 'halloween') {
+          countdown.textContent = 'haunting in ' + seconds + 's';
+        } else if (seasonalState.name === 'christmas') {
+          countdown.textContent = 'rotating in ' + seconds + (seconds === 1 ? ' sleep' : ' sleeps');
+        } else {
+          countdown.textContent = seconds === 1 ? 'rotating in 1s' : 'rotating in ' + seconds + 's';
+        }
+        if (seconds <= 5) countdown.classList.add('urgent');
         seconds--;
         setTimeout(tick, 1000);
       })();
