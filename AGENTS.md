@@ -14,9 +14,9 @@
 - Full tests: `go test ./...`
 - Focus one test: `go test -run '^TestObserveHTTPLogsAccessAndRecordsMetrics$' .`
 - Match the pre-commit Go checks with `gofmt -w <changed.go files>`, `golangci-lint run`, and `go test ./...`. If `go.mod` or `go.sum` changed, also run `go mod verify`.
-- CI on `master` runs `make build` and `golangci-lint`, then dispatches deployment to `toksikk/deploy-kaomojiserv`; deployment configuration is not in this repository.
+- Template tests read `kaomoji_template.html` from the working directory and assert exact JavaScript/accessibility markers; run tests from the repository root after template changes.
 
 ## Content And Commits
 
 - Add one kaomoji per line in `kaomojis.txt`; blank lines are not filtered and become selectable entries.
-- Commit subjects use `scope(optional issue): change description`, for example `docs: clarify setup` or `web(#42): improve response handling`. Keep the description lowercase and imperative.
+- Commit-msg hook requires Conventional Commits: `type(optional-scope): description`; accepted types are `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`.
