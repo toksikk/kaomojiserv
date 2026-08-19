@@ -19,4 +19,4 @@
 ## Content And Commits
 
 - Add one kaomoji per line in `kaomojis.txt`; blank lines are not filtered and become selectable entries.
-- Commit-msg hook requires Conventional Commits: `type(optional-scope): description`; accepted types are `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`.
+- Commit messages follow Scoped Commits: `scope(optional issue): change description`. The mandatory lowercase `scope` names the affected subsystem or module, the issue is optional, and type prefixes are not used. Examples: `ui: add guide` and `observability(#42): record request metrics`.

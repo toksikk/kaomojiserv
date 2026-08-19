@@ -50,10 +50,43 @@ func TestSeasonalTemplateIncludesPreviewsAndAccessibility(t *testing.T) {
 		`href="/raw"`,
 		`href="/api"`,
 		`href="/all"`,
+		`href="/easter-eggs"`,
+		`aria-label="Versteckte Easter-Egg-Anleitung"`,
 	}
 	for _, marker := range markers {
 		if !bytes.Contains(contents, []byte(marker)) {
 			t.Errorf("template is missing %q", marker)
+		}
+	}
+}
+
+func TestEasterEggGuideIncludesAllSecrets(t *testing.T) {
+	tmpl, err := template.ParseFiles("easter_eggs_template.html")
+	if err != nil {
+		t.Fatalf("parse Easter egg guide: %v", err)
+	}
+
+	var rendered bytes.Buffer
+	if err := tmpl.Execute(&rendered, nil); err != nil {
+		t.Fatalf("execute Easter egg guide: %v", err)
+	}
+
+	guide := rendered.String()
+	markers := []string{
+		"Drei Eier in den Rändern",
+		"bunny",
+		"AI-enhancing emotional bandwidth",
+		"NICE TRY",
+		"YOINK (I SURRENDER)",
+		"boo",
+		"hohoho",
+		"season-new-year-YEAR",
+		"↑ ↑ ↓ ↓ ← → ← → B A",
+		"genau siebenmal",
+	}
+	for _, marker := range markers {
+		if !strings.Contains(guide, marker) {
+			t.Errorf("Easter egg guide is missing %q", marker)
 		}
 	}
 }

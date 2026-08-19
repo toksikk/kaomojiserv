@@ -1,4 +1,4 @@
-default_install_hook_types: [pre-commit, commit-msg]
+default_install_hook_types: [pre-commit]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -37,10 +37,3 @@ repos:
         language: system
         pass_filenames: false
         files: ^go\.(mod|sum)$
-
-      - id: commit-message
-        name: validate commit message
-        language: pygrep
-        entry: '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9][a-z0-9._/-]*\))?: .+'
-        args: [--negate]
-        stages: [commit-msg]

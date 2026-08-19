@@ -6,15 +6,16 @@ More Kaomojis can be added to `kaomojis.txt`.
 
 ## Development
 
-Install `pre-commit` and `golangci-lint`, then enable the repository hooks:
+Install `pre-commit` and `golangci-lint`, then enable the repository hook:
 
 ```sh
-pre-commit install --hook-type pre-commit --hook-type commit-msg
+pre-commit install --hook-type pre-commit
 ```
 
 The hooks format Go files, run linting and tests, verify modules, validate YAML and
-repository hygiene, and enforce conventional commit messages such as
-`fix(lint): check errors`.
+repository hygiene. Commit messages use the scoped format
+`scope(optional issue): change description`, where the scope names the affected
+subsystem, such as `ui: add guide` or `observability(#42): record metrics`.
 
 Seasonal presentations follow the visitor's local calendar. They can be previewed
 outside their normal date ranges with `?season=easter`, `?season=april-fools`,

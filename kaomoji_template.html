@@ -102,6 +102,8 @@
       }
       .nav a { color: var(--nav); text-decoration: none; transition: color 0.1s; }
       .nav a:hover { color: var(--nav-hover); }
+      .guide-link { opacity: 0.08; transition: opacity 0.15s ease, color 0.1s; }
+      .guide-link:hover, .guide-link:focus-visible { opacity: 1; }
       .footer {
         position: fixed;
         bottom: 1rem;
@@ -372,7 +374,8 @@
       <a href="/api">/api</a> &middot;
       <a href="/all">/all</a> &middot;
       <a href="/health">/health</a> &middot;
-      <a href="/version">/version</a>
+      <a href="/version">/version</a> &middot;
+      <a class="guide-link" href="/easter-eggs" aria-label="Versteckte Easter-Egg-Anleitung">?</a>
     </div>
 
     <div class="footer" id="footer">✦ certified fresh by the Ministry of Expressiveness ✦</div>

@@ -74,6 +74,7 @@ func main() {
 	timeoutParameter := flag.String("timeout", "60", "time in seconds after last rotation until kaomoji gets rotated again")
 	kaomojisPath := flag.String("kaomojis", "kaomojis.txt", "path to file with kaomojis")
 	templatePath := flag.String("template", "kaomoji_template.html", "path to HTML template file")
+	guideTemplatePath := flag.String("guide-template", "easter_eggs_template.html", "path to Easter egg guide template file")
 	flag.Parse()
 
 	timeout, err := strconv.ParseInt(*timeoutParameter, 10, 0)
@@ -86,6 +87,12 @@ func main() {
 	tmpl, err := template.ParseFiles(*templatePath)
 	if err != nil {
 		slog.Error("error while parsing template file", "error", err)
+		panic(err)
+	}
+	slog.Info("parsing Easter egg guide template", "path", *guideTemplatePath)
+	guideTmpl, err := template.ParseFiles(*guideTemplatePath)
+	if err != nil {
+		slog.Error("error while parsing Easter egg guide template", "error", err)
 		panic(err)
 	}
 
@@ -120,6 +127,13 @@ func main() {
 		}
 		if err := tmpl.Execute(w, data); err != nil {
 			slog.Error("error while executing template", "error", err)
+		}
+	})
+
+	mux.HandleFunc("/easter-eggs", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		if err := guideTmpl.Execute(w, nil); err != nil {
+			slog.Error("error while executing Easter egg guide template", "error", err)
 		}
 	})
 

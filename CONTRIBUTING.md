@@ -5,17 +5,18 @@
 Keep each commit focused on one logical change and use this subject format:
 
 ```text
-scope(optional issue): change
+scope(optional issue): change description
 ```
 
-- `scope` identifies the affected area, such as `build`, `web`, `docs`, or `ci`.
+- `scope` identifies the affected subsystem or module, such as `ui`, `observability`, `api`, or `docs`.
 - `optional issue` is an issue or pull request reference in parentheses, such as `(#42)`.
-- `change` is a concise, imperative description written in lowercase.
+- `description` is a concise, imperative change description written in lowercase.
+- Type prefixes are not part of Scoped Commits.
 
 Examples:
 
 ```text
-docs: document commit conventions
+contributing: document commit conventions
 web(#42): improve response handling
 ```
 

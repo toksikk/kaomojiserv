@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Eine detaillierte Anleitung für alle versteckten kaomojiserv Easter Eggs." />
+    <title>Die geheime Anleitung — kaomojiserv</title>
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        color-scheme: light dark;
+        --background: #f5f1e8;
+        --foreground: #24211c;
+        --surface: #fffaf0;
+        --border: #c8c0b2;
+        --muted: #756f65;
+        --accent: #695f86;
+        --accent-hover: #292632;
+        --code-background: #ebe4d7;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #0d0d0d;
+          --foreground: #e8e8e8;
+          --surface: #1a1a1a;
+          --border: #444;
+          --muted: #999;
+          --accent: #aaa0d0;
+          --accent-hover: #fff;
+          --code-background: #2a2a2a;
+        }
+      }
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family: 'Courier New', monospace;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 3rem 1.25rem 4rem;
+      }
+      a { color: var(--accent); }
+      a:hover, a:focus-visible { color: var(--accent-hover); }
+      .back {
+        display: inline-block;
+        font-size: 0.75rem;
+        margin: 0 auto 2.5rem;
+        max-width: 58rem;
+        width: 100%;
+      }
+      main { max-width: 58rem; margin: 0 auto; }
+      header { margin-bottom: 2rem; text-align: center; }
+      .eyebrow {
+        color: var(--muted);
+        font-size: 0.7rem;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.7rem;
+        text-transform: uppercase;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 6vw, 3.2rem);
+        line-height: 1.15;
+        margin-bottom: 0.8rem;
+      }
+      h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+      h3 { font-size: 0.95rem; margin-bottom: 0.45rem; }
+      p { margin-bottom: 0.8rem; }
+      .intro { color: var(--muted); margin: 0 auto; max-width: 42rem; }
+      .preview, .notes {
+        border: 1px dashed var(--border);
+        margin-bottom: 1.5rem;
+        padding: 1.1rem 1.25rem;
+      }
+      .preview h2, .notes h2 { color: var(--accent); }
+      .preview-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem 1rem;
+        list-style: none;
+        margin: 0.8rem 0;
+      }
+      .egg-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      article {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 1.25rem;
+      }
+      article.wide { grid-column: 1 / -1; }
+      .number { color: var(--muted); font-size: 0.7rem; letter-spacing: 0.12em; }
+      ul, ol { padding-left: 1.3rem; }
+      li { margin-bottom: 0.35rem; }
+      kbd, code {
+        background: var(--code-background);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        font-family: inherit;
+        padding: 0.08rem 0.3rem;
+      }
+      .sequence { letter-spacing: 0.08em; line-height: 2.2; }
+      .reset { color: var(--muted); font-size: 0.8rem; }
+      footer {
+        color: var(--muted);
+        font-size: 0.7rem;
+        margin-top: 2rem;
+        text-align: center;
+      }
+      @media (max-width: 42rem) {
+        body { padding-top: 1.5rem; }
+        .egg-grid { grid-template-columns: 1fr; }
+        article.wide { grid-column: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/">← zurück zum Kaomoji</a>
+    <main>
+      <header>
+        <p class="eyebrow">✦ classified expressiveness archive ✦</p>
+        <h1>Die geheime Anleitung</h1>
+        <p class="intro">Du hast den versteckten Weg gefunden. Hier stehen alle Auslöser, Effekte und kleinen Regeln der kaomojiserv Easter Eggs.</p>
+      </header>
+
+      <section class="preview" aria-labelledby="preview-title">
+        <h2 id="preview-title">Saisons außerhalb ihrer Zeit testen</h2>
+        <p>Die saisonalen Easter Eggs erscheinen automatisch nach dem lokalen Kalender deines Browsers. Für einen sofortigen Test kannst du eine Saison erzwingen:</p>
+        <ul class="preview-links">
+          <li><a href="/?season=easter">Ostern</a></li>
+          <li><a href="/?season=april-fools">April Fools</a></li>
+          <li><a href="/?season=halloween">Halloween</a></li>
+          <li><a href="/?season=christmas">Weihnachten</a></li>
+          <li><a href="/?season=new-year">Neujahr</a></li>
+          <li><a href="/?season=none">Saisons aus</a></li>
+        </ul>
+        <p class="reset">Normalerweise gelten: April 1, Halloween im Oktober, Weihnachten vom 1. bis 26. Dezember, Neujahr vom 28. Dezember bis 2. Januar und Ostern von Ostersonntag bis einschließlich der folgenden sechs Tage. Die Vorschau und die Datumsberechnung verwenden die lokale Zeitzone des Browsers.</p>
+      </section>
+
+      <section class="egg-grid" aria-label="Easter Eggs">
+        <article id="easter-hunt" class="wide">
+          <p class="number">01 · OSTEREIERSUCHE</p>
+          <h2>Drei Eier in den Rändern</h2>
+          <p>Öffne <a href="/?season=easter"><code>/?season=easter</code></a> und suche nach den drei kleinen Symbolen in den Seitenrändern:</p>
+          <ol>
+            <li><kbd>◇</kbd> links oben, ungefähr bei 7&nbsp;vw und 16&nbsp;vh</li>
+            <li><kbd>◯</kbd> rechts, ungefähr bei 8&nbsp;vw und 39&nbsp;vh</li>
+            <li><kbd>⬡</kbd> links unten, ungefähr bei 21&nbsp;vw und 12&nbsp;vh</li>
+          </ol>
+          <p>Klicke alle drei an. Die gefundenen Eier werden blasser und kleiner; beim vollständigen Fund erscheint das Kaninchen <code>(\/)&nbsp;(•ㅅ•)&nbsp;(\/)</code> und der Button heißt <code>HOP</code>.</p>
+          <p class="reset">Der Fortschritt liegt in <code>sessionStorage</code> unter <code>season-easter-eggs</code> und <code>season-easter-complete</code>. Lösche diese Einträge, um die Suche in derselben Browser-Sitzung zurückzusetzen.</p>
+        </article>
+
+        <article id="easter-bunny">
+          <p class="number">02 · KANINCHEN-KURZWEG</p>
+          <h2>Das geheime Wort</h2>
+          <p>Im Ostermodus kannst du statt der Suche einfach <kbd>bunny</kbd> tippen. Das vervollständigt die Eiersuche sofort und löst dieselbe Kaninchen-Animation aus.</p>
+        </article>
+
+        <article id="april-fools">
+          <p class="number">03 · APRIL FOOLS</p>
+          <h2>KI mit emotionaler Bandbreite</h2>
+          <p>Beim ersten Aufruf von <a href="/?season=april-fools"><code>/?season=april-fools</code></a> in einer Sitzung erscheint <code>AI-enhancing emotional bandwidth...</code> mit einem absichtlich falschen Ladebalken. Danach wird die Seite kurz auf den Kopf gestellt und auf Comic Sans umgeschaltet.</p>
+          <p class="reset">Der Intro-Zustand liegt in <code>sessionStorage</code> unter <code>season-april-intro</code>. Lösche ihn, um den Scherz erneut zu sehen. Der Footer zeigt außerdem zufällig einen von drei Unternehmenssprüchen.</p>
+        </article>
+
+        <article id="april-dodge">
+          <p class="number">04 · APRIL-FOOLS-ESCAPE</p>
+          <h2>Der flüchtende YOINK-Button</h2>
+          <p>Bewege im April-Fools-Modus einen Mauszeiger über <code>YOINK</code>. Beim ersten Versuch weicht der Button mit <code>NICE TRY</code> aus. Beim zweiten Versuch ergibt er sich mit <code>YOINK (I SURRENDER)</code>.</p>
+          <p class="reset">Das funktioniert nur mit einem nicht-Touch-Zeiger und wird als <code>season-april-dodge</code> in <code>sessionStorage</code> gespeichert. Bei reduzierter Bewegung gibt es kein Ausweichen, sondern sofort die Kapitulation.</p>
+        </article>
+
+        <article id="halloween">
+          <p class="number">05 · HALLOWEEN</p>
+          <h2>Der Spuk im Kaomoji</h2>
+          <p>Im Halloween-Modus kannst du das angezeigte Kaomoji 900&nbsp;ms lang gedrückt halten, ohne den Zeiger wegzubewegen. Alternativ genügt das Tippen von <kbd>boo</kbd>.</p>
+          <p>Die Seite flackert kurz, ein Geist <code>～(つˆДˆ)つ｡☆</code> erscheint und der Countdown sagt <code>BOO!</code>. Während des 2,7-Sekunden-Spuks wird kein weiterer Spuk gestartet. Um Mitternacht lautet der Footer außerdem <code>hold still... something is near</code>.</p>
+        </article>
+
+        <article id="christmas">
+          <p class="number">06 · WEIHNACHTEN</p>
+          <h2>Das Geschenk auspacken</h2>
+          <p>Öffne <a href="/?season=christmas"><code>/?season=christmas</code></a> und klicke auf <code>[ unwrap gift ]</code> oder tippe <kbd>hohoho</kbd>.</p>
+          <p>Dann erscheinen Lichter, fallende Weihnachtssymbole, eine Weihnachtsmütze und das Geschenk <code>gift: *&lt;|:-)</code>. Das Auspacken bleibt über <code>season-christmas-unwrapped</code> in <code>sessionStorage</code> erhalten.</p>
+        </article>
+
+        <article id="new-year">
+          <p class="number">07 · NEUJAHR</p>
+          <h2>Feuerwerk zum Jahreswechsel</h2>
+          <p>Im Neujahrsmodus zählt der Button bis Mitternacht. Du kannst auf den Countdown klicken oder das kommende Zieljahr tippen, um das Feuerwerk sofort zu starten. Beim Erreichen von Mitternacht startet es automatisch.</p>
+          <p>Vier Feuerwerkswellen enthüllen <code>(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ YEAR</code>. Die automatische Feier wird pro Jahr in <code>localStorage</code> unter <code>season-new-year-YEAR</code> nur einmal ausgeführt. Ein Klick kann sie trotzdem erneut starten. In einer Neujahrs-Vorschau außerhalb von Dezember oder Januar liegt der Countdown nur zehn Sekunden in der Zukunft.</p>
+        </article>
+
+        <article id="rave" class="wide">
+          <p class="number">08 · EXPRESSIVENESS OVERLOAD</p>
+          <h2>Der geheime Rave</h2>
+          <p>Der Rave funktioniert in jeder Saison, auch mit <code>/?season=none</code>. Es gibt zwei Auslöser:</p>
+          <ol class="sequence">
+            <li>Tippe den Konami-Code: <kbd>↑ ↑ ↓ ↓ ← → ← → B A</kbd></li>
+            <li>Klicke den Footer genau siebenmal</li>
+          </ol>
+          <p>Für zehn Sekunden wechseln die Hintergrundfarben, das Kaomoji springt und wechselt die Farbe, und <code>☆</code>, <code>♡</code> und <code>ツ</code> regnen über die Seite. Der Footer zeigt währenddessen <code>✦ EXPRESSIVENESS OVERLOAD ✦</code>.</p>
+        </article>
+      </section>
+
+      <section class="notes" aria-labelledby="notes-title">
+        <h2 id="notes-title">Kleine Regeln</h2>
+        <ul>
+          <li><code>prefers-reduced-motion: reduce</code> reduziert oder unterdrückt Partikel und Bewegungen.</li>
+          <li><code>sessionStorage</code> gilt für den aktuellen Browser-Tab beziehungsweise die Sitzung; <code>localStorage</code> bleibt darüber hinaus erhalten.</li>
+          <li>Wenn ein Tastaturwort nicht reagiert, muss das Browserfenster den Tastaturfokus haben und darf keine Zusatztaste wie Ctrl, Alt oder Cmd gedrückt sein.</li>
+        </ul>
+      </section>
+    </main>
+    <footer>✦ du hast die geheime Akte gefunden ✦</footer>
+  </body>
+</html>
