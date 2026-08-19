@@ -73,7 +73,7 @@ func TestEasterEggGuideIncludesAllSecrets(t *testing.T) {
 
 	guide := rendered.String()
 	markers := []string{
-		"Drei Eier in den Rändern",
+		"Three eggs in the margins",
 		"bunny",
 		"AI-enhancing emotional bandwidth",
 		"NICE TRY",
@@ -82,7 +82,7 @@ func TestEasterEggGuideIncludesAllSecrets(t *testing.T) {
 		"hohoho",
 		"season-new-year-YEAR",
 		"↑ ↑ ↓ ↓ ← → ← → B A",
-		"genau siebenmal",
+		"exactly seven times",
 	}
 	for _, marker := range markers {
 		if !strings.Contains(guide, marker) {
