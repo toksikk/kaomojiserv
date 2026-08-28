@@ -134,7 +134,7 @@ func newMux(allk kaomojis, timeout int64, tmpl, guideTmpl *template.Template) *h
 	})
 
 	mux.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		if err := json.NewEncoder(w).Encode(apiResponse{Kaomoji: tracker.current(allk), Total: len(allk.Kaomojis)}); err != nil {
 			slog.Error("error encoding api response", "error", err)
 		}
@@ -149,7 +149,7 @@ func newMux(allk kaomojis, timeout int64, tmpl, guideTmpl *template.Template) *h
 		for _, entry := range allk.Kaomojis {
 			resp.Kaomojis = append(resp.Kaomojis, entry.Kaomoji)
 		}
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
 			slog.Error("error encoding all response", "error", err)
 		}
