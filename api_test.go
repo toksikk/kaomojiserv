@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"html/template"
-	"mime"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"unicode/utf8"
 )
 
-func TestJSONEndpointsDeclareUTF8Charset(t *testing.T) {
+func TestJSONEndpointsReturnUTF8(t *testing.T) {
 	allk := kaomojis{Kaomojis: []kaomoji{{Kaomoji: "( ˘▽˘)っ♨"}, {Kaomoji: "¯\\_(ツ)_/¯"}}}
 	tmpl := template.Must(template.New("main").Parse("ignored"))
 	guideTmpl := template.Must(template.New("guide").Parse("ignored"))
@@ -24,18 +24,14 @@ func TestJSONEndpointsDeclareUTF8Charset(t *testing.T) {
 			if response.Code != http.StatusOK {
 				t.Fatalf("status = %d, want %d", response.Code, http.StatusOK)
 			}
-			mediaType, parameters, err := mime.ParseMediaType(response.Header().Get("Content-Type"))
-			if err != nil {
-				t.Fatalf("parse Content-Type %q: %v", response.Header().Get("Content-Type"), err)
+			if contentType := response.Header().Get("Content-Type"); contentType != "application/json" {
+				t.Errorf("Content-Type = %q, want application/json", contentType)
 			}
-			if mediaType != "application/json" {
-				t.Errorf("media type = %q, want application/json", mediaType)
-			}
-			if parameters["charset"] != "utf-8" {
-				t.Errorf("charset = %q, want utf-8 (Content-Type: %q)", parameters["charset"], response.Header().Get("Content-Type"))
+			if !utf8.Valid(response.Body.Bytes()) {
+				t.Fatal("response is not valid UTF-8")
 			}
 
-			var payload map[string]any
+			var payload any
 			if err := json.Unmarshal(response.Body.Bytes(), &payload); err != nil {
 				t.Fatalf("response is not valid JSON: %v", err)
 			}
